@@ -10,7 +10,7 @@ function App() {
 
   // Fetch tasks from backend
   useEffect(() => {
-    fetch("http://localhost:3001/tasks")
+    fetch("https://simple-todo-list-w45p.onrender.com/tasks")
       .then((res) => res.json())
       .then((data) => setTasks(data))
       .catch((err) => console.error("Fetch error:", err));
@@ -23,7 +23,7 @@ function App() {
       date: selectedDate.toDateString(),
     };
 
-    fetch("http://localhost:3001/tasks", {
+    fetch("https://simple-todo-list-w45p.onrender.com/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newTask),
@@ -34,7 +34,7 @@ function App() {
   };
 
   const handleDeleteTask = (id) => {
-    fetch(`http://localhost:3001/tasks/${id}`, {
+    fetch(`https://simple-todo-list-w45p.onrender.com/tasks/${id}`, {
       method: "DELETE",
     })
       .then(() => setTasks(tasks.filter((task) => task.id !== id)))
@@ -45,7 +45,7 @@ function App() {
     const taskToToggle = tasks.find((task) => task.id === id);
     if (!taskToToggle) return;
 
-    fetch(`http://localhost:3001/tasks/${id}`, {
+    fetch(`https://simple-todo-list-w45p.onrender.com/tasks/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ done: !taskToToggle.done }),
