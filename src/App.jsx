@@ -4,6 +4,9 @@ import "react-calendar/dist/Calendar.css";
 import TodoList from "./components/TodoList";
 import AddTaskForm from "./components/AddTaskForm";
 
+// Format date to YYYY-MM-DD for consistent filtering
+const formatDate = (date) => date.toISOString().split("T")[0];
+
 function App() {
   const [tasks, setTasks] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -20,7 +23,7 @@ function App() {
     const newTask = {
       text,
       done: false,
-      date: selectedDate.toDateString(),
+      date: formatDate(selectedDate),
     };
 
     fetch("https://simple-todo-list-w45p.onrender.com/tasks", {
@@ -29,8 +32,14 @@ function App() {
       body: JSON.stringify(newTask),
     })
       .then((res) => res.json())
-      .then((addedTask) => setTasks([...tasks, addedTask]))
-      .catch((err) => console.error("Add task error:", err));
+      .then((addedTask) => {
+        console.log("Task added:", addedTask);
+        setTasks([...tasks, addedTask]);
+      })
+      .catch((err) => {
+        console.error("Add task error:", err);
+        alert("Failed to add task.");
+      });
   };
 
   const handleDeleteTask = (id) => {
@@ -65,11 +74,13 @@ function App() {
       <div className="grid md:grid-cols-2 gap-6">
         <div className="calender">
           <Calendar onChange={setSelectedDate} value={selectedDate} />
-          <p className="mt-2 text-center">Selected Date: {selectedDate.toDateString()}</p>
+          <p className="mt-2 text-center">
+            Selected Date: {formatDate(selectedDate)}
+          </p>
           <AddTaskForm onAddTask={handleAddTask} />
         </div>
         <TodoList
-          tasks={tasks.filter((task) => task.date === selectedDate.toDateString())}
+          tasks={tasks.filter((task) => task.date === formatDate(selectedDate))}
           onDeleteTask={handleDeleteTask}
           onToggleDone={handleToggleDone}
         />
